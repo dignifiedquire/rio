@@ -127,7 +127,7 @@ fn main() -> Result<()> {
     for i in 0..1000 {
         let at = rng.gen_range(0, SIZE) * CHUNK_SIZE;
 
-        let read = ring.read_at(&file, &buffer, at);
+        let read = ring.read_at(&file, &in_slice, at);
         completions.push(read);
     }
 
