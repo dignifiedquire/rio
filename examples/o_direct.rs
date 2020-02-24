@@ -36,7 +36,7 @@ fn main() -> Result<()> {
 
     let mut completions = vec![];
 
-    const SIZE: u64 = 10 * 1024;
+    const SIZE: u64 = 10 * 1024 * 256;
 
     println!("writing");
     let pre = std::time::Instant::now();
@@ -96,7 +96,7 @@ fn main() -> Result<()> {
     let pre = std::time::Instant::now();
     let mut completions = vec![];
 
-    for i in 0..1000 {
+    for i in 0..256 * 1000 {
         let at = rng.gen_range(0, SIZE) * CHUNK_SIZE;
 
         let read = ring.read_at(&file, &in_slice, at);
@@ -124,7 +124,7 @@ fn main() -> Result<()> {
     let pre = std::time::Instant::now();
     let mut completions = vec![];
 
-    for i in 0..1000 {
+    for i in 0..256 * 1000 {
         let at = rng.gen_range(0, SIZE) * CHUNK_SIZE;
 
         let read = ring.read_at(&file, &in_slice, at);
