@@ -88,7 +88,7 @@ fn main() -> Result<()> {
 
     dbg!(post_submit - pre, post_complete - post_submit);
 
-    println!("reading random 1000");
+    println!("reading random 1000 - o_direct");
     use rand::{Rng, SeedableRng};
 
     let mut rng = rand::rngs::SmallRng::from_entropy();
@@ -100,6 +100,32 @@ fn main() -> Result<()> {
         let at = rng.gen_range(0, SIZE) * CHUNK_SIZE;
 
         let read = ring.read_at(&file, &in_slice, at);
+        completions.push(read);
+    }
+
+    let post_submit = std::time::Instant::now();
+
+    for completion in completions.into_iter() {
+        completion.wait()?;
+    }
+
+    let post_complete = std::time::Instant::now();
+
+    dbg!(post_submit - pre, post_complete - post_submit);
+
+    println!("reading random 1000 - regular");
+
+    let mut rng = rand::rngs::SmallRng::from_entropy();
+    let file = std::fs::File::open("file")?;
+    let buffer = &mut [0u8; 32];
+
+    let pre = std::time::Instant::now();
+    let mut completions = vec![];
+
+    for i in 0..1000 {
+        let at = rng.gen_range(0, SIZE) * CHUNK_SIZE;
+
+        let read = ring.read_at(&file, &buffer, at);
         completions.push(read);
     }
 
