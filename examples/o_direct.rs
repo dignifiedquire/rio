@@ -36,8 +36,12 @@ fn main() -> Result<()> {
 
     let mut completions = vec![];
 
+    const SIZE: usize = 10 * 1024;
+
+    println!("writing");
     let pre = std::time::Instant::now();
-    for i in 0..(10 * 1024) {
+
+    for i in 0..SIZE {
         let at = i * CHUNK_SIZE;
 
         // By setting the `Link` order,
@@ -48,13 +52,26 @@ fn main() -> Result<()> {
             &file,
             &out_slice,
             at,
-            rio::Ordering::Link,
+            rio::Ordering::None,
         );
         completions.push(write);
+    }
 
-        // This operation will not start
-        // until the previous linked one
-        // finishes.
+    let post_submit = std::time::Instant::now();
+
+    for completion in completions.into_iter() {
+        completion.wait()?;
+    }
+
+    let post_complete = std::time::Instant::now();
+
+    dbg!(post_submit - pre, post_complete - post_submit);
+
+    println!("reading");
+
+    for i in 0..SIZE {
+        let at = i * CHUNK_SIZE;
+
         let read = ring.read_at(&file, &in_slice, at);
         completions.push(read);
     }
