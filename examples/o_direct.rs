@@ -36,7 +36,7 @@ fn main() -> Result<()> {
 
     let mut completions = vec![];
 
-    const SIZE: usize = 10 * 1024;
+    const SIZE: u64 = 10 * 1024;
 
     println!("writing");
     let pre = std::time::Instant::now();
@@ -69,6 +69,7 @@ fn main() -> Result<()> {
 
     println!("reading sequential");
     let pre = std::time::Instant::now();
+    let mut completions = vec![];
 
     for i in 0..SIZE {
         let at = i * CHUNK_SIZE;
@@ -88,11 +89,13 @@ fn main() -> Result<()> {
     dbg!(post_submit - pre, post_complete - post_submit);
 
     println!("reading random 1000");
-    use rand::Rng;
+    use rand::{Rng, SeedableRng};
 
     let mut rng = rand::rngs::SmallRng::from_entropy();
 
     let pre = std::time::Instant::now();
+    let mut completions = vec![];
+
     for i in 0..1000 {
         let at = rng.gen_range(0, SIZE) * CHUNK_SIZE;
 
