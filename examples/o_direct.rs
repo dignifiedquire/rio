@@ -3,7 +3,7 @@ use std::{
     os::unix::fs::OpenOptionsExt,
 };
 
-const CHUNK_SIZE: u64 = 4096 * 256;
+const CHUNK_SIZE: u64 = 4096 * 1;
 
 // `O_DIRECT` requires all reads and writes
 // to be aligned to the block device's block
@@ -112,6 +112,8 @@ fn main() -> Result<()> {
     let post_complete = std::time::Instant::now();
 
     dbg!(post_submit - pre, post_complete - post_submit);
+
+    drop(file);
 
     println!("reading random 1000 - regular");
 
