@@ -26,6 +26,7 @@ extreme = "666.666.666"
 
 [dependencies]
 libc = "0.2.66"
+rand = { version = "0.7.3", features = ["small_rng"] }
 
 [features]
 no_metrics = []
